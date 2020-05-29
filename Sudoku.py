@@ -10,7 +10,7 @@ WIDTH = HEIGHT = MARGIN * 2 + SIDE # The width and height of the entire board
 
 
 #Error exceptions
-class SudokuError(Exceptio):
+class SudokuError(Exception):
 
     #Future implementation
 
@@ -67,3 +67,67 @@ class SudokuBoard(object):
 
         #Return the constructed board
         return board
+
+
+class SudokuGame(object):
+    #Incharge of storing ths status of the board and checking if the puzzle is complete
+
+    def __init__(self,board_file):
+        self.board_file =board_file
+        self.start_puzzle = SudokuBoard(board_file).board
+
+    #Setup for the users to play
+
+    #initially set the game over flag to false and later charge to true once the puzzle is complete
+    #We also create a copy to clear the board at the end of the game as well as check the answers against the start board
+
+    def Start(self):
+        self.game_over = False
+        self.puzzle = []
+        for i in range(9):
+            self.puzzle.append([])
+        for j in range(9):
+            self.puzzle[i].append(self.start_puzzle[i][j])
+
+
+#Checking the answers to see if the user won the puzzle, and check the board's row, columns  and each 3x3 square
+    def check_win(self):
+        for row in range(9):
+            if not self.__check_row(row):
+                return False
+        for column in range(9):
+            if not self.__check_column(column):
+                return False
+        for row in range(9):
+            for column in range(9):
+                if not self.__check_square(row, column):
+                    return False
+        self.game_over = True
+        return True
+
+
+    #Checking inputted numbers(helper functions)
+
+    def __check_block(self,block):
+        return set(block) == set(range(1,10))
+    def __check_row(self,row):
+        return set.__check_block(self.puzzle[row])
+    def __check_column(self,column):
+        return set.__check_block([self.puzzle[row][column] for row in range(9)])
+    def __check_square(self,row,column):
+        return self.__check_block(
+            [
+                self.puzzle[r][c]
+                for r in range(row * 3, (row + 1) * 3)
+                for c in range(column * 3, (column +1) * 3)
+
+
+
+
+            ]
+        )
+#Check block returns true if the block passed in(row, column or square) is eqaul to set(range(1,10)). The set(range(1,10)) means only numbers 1 thru 9 are valid.
+#If the block is padded in then False is returned
+
+#Check row and column iterate over each row/column of the puzzle with the user's input and passes it to check_block. Check square does the same thing but not with with row
+#and columns but a 3x3 square
