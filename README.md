@@ -1,5 +1,4 @@
 # Sudoku-Board-Game
-Austin Escalante
 Classic game of Sudoku 
 
 Run the project through terminal with the code:
