@@ -1,4 +1,4 @@
-import argarse
+import argparse
 from Tkinter import Tk, Canvas, Frame, Button, BOTH, TOP, BOTTOM
 
 #Global variables
@@ -26,7 +26,7 @@ class SudokuBoard(object):
     #self.board is equal to the private function
 
     def __init__(self,board_file):
-        self.board = create_board(board_file)
+        self.board = self.__create_board(board_file)
     def __create_board(self,board_file):
         #Start off with an initial matrix
         board = []
@@ -131,3 +131,55 @@ class SudokuGame(object):
 
 #Check row and column iterate over each row/column of the puzzle with the user's input and passes it to check_block. Check square does the same thing but not with with row
 #and columns but a 3x3 square
+
+
+
+#Implement GUI
+
+#Represent the Sudoku UI
+
+class SudokuUI(Frame):
+    #Responsible for drawing the board and accpeting user input
+
+    #For each new game we create a new UI, SudokuUI with a game and parent. Parent is the main window of the whole program
+
+    def __init__(self,parent, game):
+        self.game = game
+        self.parent = parent
+        Frame.__init__(self,parent)
+
+        self.row, self.col = 0, 0
+
+        self.__initUI()
+
+
+    def __initUI(self):
+        self.parent.title("Sudoku")
+
+        #self.pack is a frame attribute that organizes the frame's geometry relative to the parent. We wnat to fill the entire frame, so fill=both means both vert and horiz
+        self.pack(fill= BOTH, expand = 1)
+        #canvas is a general purpose widget so we can diplay the board.The global variables of width and height will help us setup tne canvas
+        self.canvas = Canvas(self, width =WIDTH, height = HEIGHT)
+        #A set pack where the entire square of the puzzle will fit in the space and will e pulled to the top part of the window
+        self.canvas.pack(fill = BOTH, side = TOP)
+
+        #We create a button attribbute using Button, giving it a text and a command when its pressed.
+        clear_button = Button(self, text = "Clear answers", command = self.__clear_answers)
+
+        #We set a pack for the button to fill the space, and sit at the bottom of the window
+        clear_button.pack(fill = BOTH, side = Button)
+
+        #Two helper functions
+        self.__draw_grid()
+        self.__draw_puzzle()
+
+
+
+        #The first canvas bind is binding the Button-1 to a callback to cell_clicked. The Button-1 is a mouse click and refers to left click
+        #When the user clicks on the puzzle with a single left click, the UI cell_clicked is called. The bind method passes in x and y location of the cursor
+        #where cell_clicked will turn into cells of the puzzle
+        #Key is used in the same fashion, where the __key_pressed will bind the key the user enters(number) to the method.
+        self.canvas.bind("<Button-1>", self.__cell_clicked)
+        self.canvas.bind("<Key>", self.__key_pressed)
+
+
